@@ -11,14 +11,18 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 
+const messages = []
+
 bot.on('message', async msg => {
    const chatId = msg.chat.id
    const message = msg.text
 
+   messages.push({ role: 'user', content: message })
+
    try {
       const completion = await openai.createChatCompletion({
          model: 'gpt-3.5-turbo',
-         messages: [{ role: 'user', content: message }],
+         messages: messages,
       })
       bot.sendMessage(chatId, completion.data.choices[0].message.content.trim())
    }
